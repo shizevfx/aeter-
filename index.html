@@ -26,12 +26,11 @@
             padding: 0;
             height: 100%;
             font-family: 'Courier New', Courier, monospace;
-            background-color: var(--bg-color); /* The absolute bottom layer */
+            background-color: var(--bg-color);
             color: var(--text-main);
             overflow: hidden;
         }
 
-        /* Click to Enter Screen */
         #enter-screen {
             position: fixed;
             top: 0;
@@ -45,7 +44,7 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            z-index: 9999; /* Absolute top layer */
+            z-index: 9999;
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -61,7 +60,6 @@
             color: var(--text-main);
         }
 
-        /* Sketchy Loader Styles */
         #loader-wrapper {
             display: flex;
             flex-direction: column;
@@ -88,7 +86,7 @@
         #sketch-bar {
             height: 100%;
             background-color: var(--text-main);
-            width: 0%; /* JS will animate this */
+            width: 0%;
             transition: width 0.1s linear;
             animation: fill-jitter 0.3s infinite steps(3);
         }
@@ -113,7 +111,6 @@
             100% { transform: scaleY(1); opacity: 0.8; }
         }
 
-        /* Background Video */
         #bg-video {
             position: fixed;
             top: 0;
@@ -121,12 +118,11 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 0; /* Sits right above the background color */
+            z-index: 0;
             opacity: 0.5;
             pointer-events: none;
         }
 
-        /* UI Layer Fade-in (Holds the dashboard) */
         #ui-layer {
             position: fixed;
             top: 0;
@@ -139,7 +135,7 @@
             opacity: 0;
             transition: opacity 2s ease-in-out;
             pointer-events: none;
-            z-index: 10; /* Sits above the video */
+            z-index: 10;
         }
 
         #ui-layer.visible {
@@ -156,7 +152,6 @@
             align-items: center;
         }
 
-        /* Top Quote */
         .quote-container {
             text-align: center;
             margin-bottom: 30px;
@@ -179,7 +174,6 @@
             letter-spacing: 1px;
         }
 
-        /* Main Section */
         .main-layout {
             display: flex;
             width: 100%;
@@ -195,7 +189,6 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
-        /* Console Header */
         .panel-header {
             display: flex;
             justify-content: space-between;
@@ -207,7 +200,6 @@
             text-transform: uppercase;
         }
 
-        /* Visualizer Box */
         .visualizer-container {
             width: 100%;
             height: 180px;
@@ -228,7 +220,6 @@
             filter: hue-rotate(180deg) contrast(1.1);
         }
 
-        /* Link Grid */
         .links-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -253,7 +244,6 @@
             color: var(--accent-orange);
         }
 
-        /* Footer Status */
         .footer-status {
             margin-top: 30px;
             text-align: center;
@@ -275,7 +265,6 @@
             gap: 6px;
         }
 
-        /* Mute Button */
         #mute-btn {
             position: fixed;
             top: 20px;
@@ -297,7 +286,6 @@
             border-color: var(--accent-orange);
         }
 
-        /* Mobile Adjustments */
         @media (max-width: 500px) {
             .links-grid { grid-template-columns: 1fr 1fr; }
             .quote-text { font-size: 0.75rem; }
@@ -306,7 +294,6 @@
 </head>
 <body>
 
-    <!-- Click to Enter Screen with Loader -->
     <div id="enter-screen">
         <div id="loader-wrapper">
             <div class="loader-text">loading...</div>
@@ -319,21 +306,16 @@
         </div>
     </div>
 
-    <!-- Background Video -->
     <video id="bg-video" src="bg.mp4" loop playsinline preload="auto"></video>
 
-    <!-- UI Wrapper -->
     <div id="ui-layer">
-        <!-- Mute/Unmute Control -->
         <button id="mute-btn">mute</button>
 
         <div class="container">
-            <!-- Top Quote -->
             <div class="quote-container">
                 <span class="quote-text">SKIN TURNS RED</span>
             </div>
 
-            <!-- Main Dashboard -->
             <div class="main-layout">
                 <div class="center-dashboard">
                     <div class="panel-header">
@@ -342,7 +324,6 @@
                     </div>
 
                     <div class="visualizer-container" id="visualizer">
-                        <!-- Default fallback if no asset1.* is found -->
                         <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2o0Zzl5YXR4YnQ1ZzB6eG81bmR5bmR5bmR5bmR5bmR5bmR5bmR5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/mSg9adZ4wQ7XW/giphy.gif" alt="visuals">
                     </div>
 
@@ -355,7 +336,6 @@
                 </div>
             </div>
 
-            <!-- Status Footer -->
             <div class="footer-status">
                 <div class="user-id" id="user-status">@shizefx [loading...]</div>
                 <div class="spotify-bar" id="spotify-status">
@@ -363,36 +343,32 @@
                 </div>
             </div>
         </div>
-    </div> <!-- End of UI Layer -->
+    </div>
 
     <script>
-        // --- Loading Bar Logic ---
         let isPageLoaded = false;
         let isVideoLoaded = false;
         let canEnter = false;
         
         const bgVideo = document.getElementById('bg-video');
 
-        // Listen for actual window load
         window.addEventListener('load', () => {
             isPageLoaded = true;
         });
 
-        // Listen for background video to download/buffer enough to play
         if (bgVideo) {
             if (bgVideo.readyState >= 3) {
-                isVideoLoaded = true; // Already loaded from cache
+                isVideoLoaded = true;
             } else {
                 bgVideo.addEventListener('canplaythrough', () => {
                     isVideoLoaded = true;
                 });
             }
         } else {
-            isVideoLoaded = true; // Fallback if no video element
+            isVideoLoaded = true;
         }
 
-        // Fallback in case window.onload or video load fires too late/fails
-        setTimeout(() => { isPageLoaded = true; isVideoLoaded = true; }, 8000); 
+        setTimeout(() => { isPageLoaded = true; isVideoLoaded = true; }, 2000); 
 
         const loaderWrapper = document.getElementById('loader-wrapper');
         const enterText = document.getElementById('enter-text');
@@ -401,10 +377,8 @@
         let progress = 0;
         const loadInterval = setInterval(() => {
             if (progress < 90) {
-                // Fake load progress up to 90%
-                progress += Math.random() * 8;
+                progress += 30;
             } else if (isPageLoaded && isVideoLoaded) {
-                // Once 90% is reached, wait for actual page and video load to hit 100%
                 progress = 100;
             }
 
@@ -413,22 +387,20 @@
                 clearInterval(loadInterval);
                 if (sketchBar) sketchBar.style.width = '100%';
                 
-                // Wait briefly at 100% so the user sees it finish
                 setTimeout(() => {
                     if (loaderWrapper) loaderWrapper.style.display = 'none';
                     if (enterText) {
                         enterText.style.display = 'block';
-                        void enterText.offsetWidth; // Force reflow
+                        void enterText.offsetWidth;
                         enterText.style.opacity = '1';
                     }
-                    canEnter = true; // Allow the user to click to enter now
-                }, 400);
+                    canEnter = true;
+                }, 50);
             } else {
                 if (sketchBar) sketchBar.style.width = progress + '%';
             }
-        }, 150);
+        }, 20);
 
-        // --- Clock Logic ---
         function updateClock() {
             const timeEl = document.getElementById('current-time');
             const dateEl = document.getElementById('current-date');
@@ -448,7 +420,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // --- Asset Loader Logic ---
         const visualizer = document.getElementById('visualizer');
         
         const assetsToTry = [
@@ -491,7 +462,6 @@
 
         tryLoadAsset(0);
 
-        // --- Lanyard API Integration ---
         const lanyardUserId = "886174926237749278";
         const userIdElement = document.getElementById('user-status');
         const spotifyElement = document.getElementById('spotify-status');
@@ -529,7 +499,6 @@
         fetchLanyardData();
         setInterval(fetchLanyardData, 5000);
 
-        // --- Video & UI Logic ---
         const muteBtn = document.getElementById('mute-btn');
         const enterScreen = document.getElementById('enter-screen');
         const uiLayer = document.getElementById('ui-layer');
@@ -548,31 +517,26 @@
             uiLayer.classList.remove('visible');
         }
 
-        // Handle Click to Enter
         if (enterScreen) {
             enterScreen.addEventListener('click', () => {
-                if (!canEnter) return; // Prevent clicking while loading bar is active
+                if (!canEnter) return;
 
-                // Hide overlay
                 enterScreen.style.opacity = '0';
                 setTimeout(() => {
                     if(enterScreen.parentNode) enterScreen.parentNode.removeChild(enterScreen);
                 }, 500);
 
-                // Unmute and play background video from the beginning
                 if (bgVideo) {
-                    bgVideo.currentTime = 0; // Start at 0:00
+                    bgVideo.currentTime = 0;
                     bgVideo.muted = false;
                     bgVideo.play().catch(e => console.error("Video play error:", e));
                     if (muteBtn) muteBtn.textContent = 'mute';
                 }
 
-                // Safety fallback: reveal UI after 10.5 seconds if video timing fails
                 setTimeout(revealUI, 10500);
             });
         }
 
-        // Toggle mute
         if (muteBtn && bgVideo) {
             muteBtn.addEventListener('click', () => {
                 bgVideo.muted = !bgVideo.muted;
@@ -580,21 +544,17 @@
             });
         }
 
-        // Fade UI in and out based on video time
         if (bgVideo) {
             bgVideo.addEventListener('timeupdate', () => {
                 const time = bgVideo.currentTime;
                 
-                // Show UI between 10s and 62s (1:02)
                 if (time >= 10 && time < 62) {
                     revealUI();
-                    uiHidden = false; // Reset hidden state just in case
+                    uiHidden = false;
                 } 
-                // Hide UI after 62 seconds
                 else if (time >= 62) {
                     hideUI();
                 } 
-                // Reset states if video loops back to the start (before 10s)
                 else if (time < 10) {
                     uiRevealed = false;
                     uiHidden = false;
